@@ -4,7 +4,7 @@
 
 Bowen Zheng, Tianming Yang
 
-[ariv](https://arxiv.org/abs/2405.20750)
+[arxiv](https://arxiv.org/abs/2405.20750)
 
 >Diffusion Models (DMs) have achieved great success in image generation and
 other fields. By fine sampling through the trajectory defined by the SDE/ODE

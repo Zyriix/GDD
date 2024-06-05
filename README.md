@@ -38,13 +38,16 @@ A large portion of codes in this repo is based on [EDM](https://github.com/NVlab
 
 
 
-### install enviroments
+### Install enviroments
 > conda create -n gdd python=3.9
+>
 > pip install torch==1.12.1+cu116 torchvision==0.13.1+cu116 torchaudio==0.12.1 --extra-index-url https://download.pytorch.org/whl/cu116
+>
 > pip install -r requirements.txt
 
-### download models
+### Download models
 > Download from [Google Drive](https://drive.google.com/drive/folders/1U0lrxJWcLt5d3oAbVUU3FJOY0lQSrZQH?usp=sharing)
+>
 > put the model to all_ckpt. E.g., GDD/all_ckpt/cifar_uncond_gdd_i.pkl
 
 ### FID

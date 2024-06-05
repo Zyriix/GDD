@@ -30,6 +30,34 @@ breakthrough not only enhances the understanding of efficient image generation
 models but also offers a scalable framework for advancing the state of the art in
 various applications.
 
+Validation codes are avaliable. Training codes will be released once this work is accepted.
 
-- Validation codes and checkpoint will release in a few days.
-- Training codes will be released once the 
+The references for computing FID are from [EDM](https://github.com/NVlabs/edm).
+
+A large portion of codes in this repo is based on [EDM](https://github.com/NVlabs/edm) and [StyleGAN2-ADA](https://github.com/NVlabs/stylegan2-ada-pytorch). 
+
+
+
+### install enviroments
+> conda create -n gdd python=3.9
+> pip install torch==1.12.1+cu116 torchvision==0.13.1+cu116 torchaudio==0.12.1 --extra-index-url https://download.pytorch.org/whl/cu116
+> pip install -r requirements.txt
+
+### download models
+> Download from [Google Drive](https://drive.google.com/drive/folders/1U0lrxJWcLt5d3oAbVUU3FJOY0lQSrZQH?usp=sharing)
+> put the model to all_ckpt. E.g., GDD/all_ckpt/cifar_uncond_gdd_i.pkl
+
+### FID
+> sh validation.sh
+
+### Inception Score
+> Coming Soon
+
+### Precision and Recall
+> Coming Soon
+
+
+
+
+
+

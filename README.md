@@ -51,13 +51,24 @@ A large portion of codes in this repo is based on [EDM](https://github.com/NVlab
 > put the model to all_ckpt. E.g., GDD/all_ckpt/cifar_uncond_gdd_i.pkl
 
 ### FID
-> sh validation.sh
+> sh validation_fid.sh
 
-### Inception Score
-> Coming Soon
+### Inception Score & Precision/Recall
+**It is strongly recommended NOT to run this on A100 since it will be extremely slow for unknown reasons.**
 
-### Precision and Recall
-> Coming Soon
+NOTE, there is a trade off between FID and IS during training, checkpoints are with lowest FID.
+
+For computing precision/recall on imagenet 64x64, download ref batches from [guided-diffusion](https://openaipublic.blob.core.windows.net/diffusion/jul-2021/ref_batches/imagenet/64/VIRTUAL_imagenet64_labeled.npz) and put it into results/imagenet.
+
+> cd evaluations
+
+Use conda instead of pip to install TensorFlow; otherwise, the GPU driver will not be found.
+> conda install tensorflow-gpu
+>
+> pip install -r requirements.txt
+
+Then
+> sh validate_is_pr
 
 
 

@@ -220,7 +220,8 @@ def main(network_pkl, outdir, subdirs, seeds, class_idx, max_batch_size, device=
 
         class_labels = None
         if net.label_dim:
-            class_labels = torch.eye(net.label_dim, device=device)[rnd.randint(net.label_dim, size=[batch_size], device=device)]
+            random_cls_idx = rnd.randint(net.label_dim, size=[batch_size], device=device)
+            class_labels = torch.eye(net.label_dim, device=device)[random_cls_idx]
         if class_idx is not None:
             class_labels[:, :] = 0
             class_labels[:, class_idx] = 1
@@ -228,6 +229,11 @@ def main(network_pkl, outdir, subdirs, seeds, class_idx, max_batch_size, device=
         # Generate images.
         images = sampler_fn(net, latents, class_labels,  randn_like=rnd.randn_like, **sampler_kwargs)
         # Save images.
+        gathered_samples = [torch.zeros_like(images) for _ in range(torch.distributed.get_world_size())]
+        torch.distributed.all_gather(gathered_samples, images) # support multi-gpu when evaluating inception score/precisoin recall
+        gathered_samples = torch.cat(gathered_samples)
+        gathered_samples_np = (gathered_samples * 127.5 + 128).clip(0,255).to(torch.uint8).permute(0, 2, 3, 1).cpu().numpy()
+        all_images.append(gathered_samples_np)
         images_np = (images * 127.5 + 128).clip(0,255).to(torch.uint8).permute(0, 2, 3, 1).cpu().numpy()
         for seed, image_np in zip(batch_seeds, images_np):
             image_dir = os.path.join(outdir, f'{seed-seed%1000:06d}') if subdirs else outdir
@@ -237,15 +243,16 @@ def main(network_pkl, outdir, subdirs, seeds, class_idx, max_batch_size, device=
                 PIL.Image.fromarray(image_np[:, :, 0], 'L').save(image_path)
             else:
                 PIL.Image.fromarray(image_np, 'RGB').save(image_path)
-
-        all_images.append(images_np)
+        
         if class_labels is not None:
-            labels.append(class_labels.cpu().numpy())
+            gathered_labels = [torch.zeros_like(random_cls_idx) for _ in range(torch.distributed.get_world_size())]
+            torch.distributed.all_gather(gathered_labels, random_cls_idx)
+            labels.append(torch.cat(gathered_labels).cpu().numpy())
 
     all_images = np.concatenate(all_images,axis=0)
 
     # save to npz for inception score, precision and recall
-    if len(labels) !=0:
+    if net.label_dim:
         labels = np.concatenate(labels,axis=0)
         np.savez(f"{outdir}/image_pack",all_images,labels)
     else:

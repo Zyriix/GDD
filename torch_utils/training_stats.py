@@ -1,5 +1,9 @@
 # Copyright (c) 2022, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 #
+# Modified work Copyright 2024 Bowen Zheng
+# Center for Excellence in Brain Science and Intelligence Technology 
+# Chinese Academy of Sciences
+#
 # This work is licensed under a Creative Commons
 # Attribution-NonCommercial-ShareAlike 4.0 International License.
 # You should have received a copy of the license along with this

@@ -1,5 +1,9 @@
 # Copyright (c) 2022, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 #
+# Modified work Copyright 2024 Bowen Zheng
+# Center for Excellence in Brain Science and Intelligence Technology 
+# Chinese Academy of Sciences
+#
 # This work is licensed under a Creative Commons
 # Attribution-NonCommercial-ShareAlike 4.0 International License.
 # You should have received a copy of the license along with this
@@ -158,19 +162,9 @@ def copy_params_and_buffers(src_module, dst_module, require_all=False):
     
     src_tensors = dict(named_params_and_buffers(src_module))
     for name, tensor in named_params_and_buffers(dst_module):
-        # print(src_tensors)
-        # if name not in src_tensors:
-        #     print(name," skipped")
         assert (name in src_tensors) or (not require_all)
-        # if name not in src_tensors:
-        #     print(name," skipped")
         if name in src_tensors:
-            # print(name,src_tensors[name].shape,tensor.shape)
             if tensor.shape != src_tensors[name].shape:
-                # if tensor.shape[1]==src_tensors[name].shape[1]*2:
-                #     print("Doubling channels", name, tensor.shape,'from', src_tensors[name].shape)
-                #     tensor.copy_(src_tensors[name].repeat(1,2,1,1))
-                # else:
                 print("Skip since Inconsistent Shape", name, tensor.shape,'from', src_tensors[name].shape)
                 continue
             tensor.copy_(src_tensors[name])
@@ -189,14 +183,11 @@ def copy_params_and_buffers_partial(src_module, dst_module, first_half=True, req
             if tensor.shape[0] != src_tensors[name].shape[0]:
                 print(name, "copying from {} to {}".format(src_tensors[name].shape, tensor.shape))
                 if len(tensor.shape)<=1 or tensor.shape[1] == src_tensors[name].shape[1]:
-                    # random_idx = np.random.randint(0, src_tensors[name].shape[0], tensor.shape[0])
                     if first_half:
                         tensor.copy_(src_tensors[name][:tensor.shape[0],...])
                     else:
                         tensor.copy_(src_tensors[name][tensor.shape[0]:,...])
                 else:
-                    # random_idx_0 = np.random.randint(0, src_tensors[name].shape[0], tensor.shape[0])
-                    # random_idx_1 = np.random.randint(0, src_tensors[name].shape[1], tensor.shape[1])
                     if first_half:
                         tmp  = src_tensors[name][:tensor.shape[0],...]
                         tensor.copy_(tmp[:,:tensor.shape[1],...])
@@ -205,7 +196,6 @@ def copy_params_and_buffers_partial(src_module, dst_module, first_half=True, req
                         tensor.copy_(tmp[:,tensor.shape[1]:,...])
             elif len(tensor.shape)>=2 and tensor.shape[1] != src_tensors[name].shape[1]:
                 print(name, "copying from {} to {}".format(src_tensors[name].shape, tensor.shape))
-                # random_idx = np.random.randint(0, src_tensors[name].shape[1], tensor.shape[1])
                 if first_half:
                     tensor.copy_(src_tensors[name][:,:tensor.shape[1],...])
                 else:

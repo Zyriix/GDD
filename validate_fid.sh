@@ -1,6 +1,9 @@
 #!/bin/bash
 export MKL_NUM_THREADS=1
 
+
+
+
 ckpt_path=(
    all_ckpt/cifar_uncond_gdd_i.pkl
    all_ckpt/cifar_cond_gdd_i.pkl

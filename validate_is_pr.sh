@@ -6,7 +6,7 @@ npz_path=(
 
 ref_path=(
    "none"
-   results/imagenet/VIRTUAL_imagenet64_labeled.npz
+   iresults/imagenet/VIRTUAL_imagenet64_labeled.npz
 )
 
 for ((j=0;j<${#npz_path[*]};j++))

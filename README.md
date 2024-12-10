@@ -1,12 +1,11 @@
 # GDD - Official Pytorch implementation
-![image](./main.png)
-**Diffusion Models Are Innate One-Step Generators**
+![image](./fig/main.png)
+
+## Diffusion Models Are Innate One-Step Generators  [[arxiv]](https://arxiv.org/abs/2405.20750)
 
 Bowen Zheng, Tianming Yang
 
-[arxiv](https://arxiv.org/abs/2405.20750)
-
->Diffusion Models (DMs) have achieved great success in image generation and
+*Diffusion Models (DMs) have achieved great success in image generation and
 other fields. By fine sampling through the trajectory defined by the SDE/ODE
 solver based on a well-trained score model, DMs can generate remarkable high-
 quality results. However, this precise sampling often requires multiple steps and is
@@ -28,27 +27,45 @@ and ImageNet 64x64 (FID 1.16) with great efficiency. Most of those results are
 obtained with only 5 million training images within 6 hours on 8 A100 GPUs. This
 breakthrough not only enhances the understanding of efficient image generation
 models but also offers a scalable framework for advancing the state of the art in
-various applications.
+various applications.*
 
-Validation codes are avaliable. Training codes will be released once this work is accepted.
+## Related Repositories
+The references for computing FID are from [EDM](https://github.com/NVlabs/edm), and a large portion of codes in this repo is based on [EDM](https://github.com/NVlabs/edm) and [StyleGAN2-ADA](https://github.com/NVlabs/stylegan2-ada-pytorch). 
 
-The references for computing FID are from [EDM](https://github.com/NVlabs/edm).
-
-A large portion of codes in this repo is based on [EDM](https://github.com/NVlabs/edm) and [StyleGAN2-ADA](https://github.com/NVlabs/stylegan2-ada-pytorch). 
-
-
-
-### Install enviroments
+## Prepare Environments
 > conda create -n gdd python=3.9
->
-> pip install torch==1.12.1+cu116 torchvision==0.13.1+cu116 torchaudio==0.12.1 --extra-index-url https://download.pytorch.org/whl/cu116
->
-> pip install -r requirements.txt
 
-### Download models
-> Download from [Google Drive](https://drive.google.com/drive/folders/1U0lrxJWcLt5d3oAbVUU3FJOY0lQSrZQH?usp=sharing)
->
-> put the model to all_ckpt. E.g., GDD/all_ckpt/cifar_uncond_gdd_i.pkl
+Use conda instead of pip to install TensorFlow; otherwise, the GPU driver will not be found.
+> conda install tensorflow-gpu
+
+Manually install torch to avoid conflicts.
+> pip install torch==1.12.1+cu116 torchvision==0.13.1+cu116 torchaudio==0.12.1 --extra-index-url https://download.pytorch.org/whl/cu116
+
+
+For training and validation
+> pip install -r requirements.txt 
+
+If you are only interested im validation or inference.
+> pip install -r requirements_validation.txt 
+
+
+
+## Training
+NOTE: To release the training code as quickly as possible, we’ve modified and removed a large portion of irrelevant or experimental code for clarity. We will continuously check the results but there might be some potential issues. If you have any problems, please open an issue, and we will reply ASAP.
+
+### Download Diffusion Checkpoints
+Follow [EDM's guaidance](https://github.com/NVlabs/edm?tab=readme-ov-file#pre-trained-models), and put the checkpoints into `GDD/pretrained`, e.g., `GDD/pretrained/edm-afhqv2-64x64-uncond-ve.pkl`.
+
+### Prepare the datasets
+Follow [EDM's guaidance](https://github.com/NVlabs/edm?tab=readme-ov-file#preparing-datasets), and put the datasets into `GDD/datasets`, e.g., `GDD/datasets/cifar10-32x32.zip`
+### Running
+All the training commands are available in `train.sh`. You may modify the parameters according to your needs.
+> sh train.sh
+
+## Validation
+
+### Download Checkpoints
+Download from [Google Drive](https://drive.google.com/drive/folders/1U0lrxJWcLt5d3oAbVUU3FJOY0lQSrZQH?usp=sharing), and put the model to `GDD/all_ckpt`. E.g., `GDD/all_ckpt/cifar_uncond_gdd_i.pkl`
 
 ### FID
 > sh validation_fid.sh
@@ -56,22 +73,46 @@ A large portion of codes in this repo is based on [EDM](https://github.com/NVlab
 ### Inception Score & Precision/Recall
 **It is strongly recommended NOT to run this on A100 since it will be extremely slow for unknown reasons.**
 
-NOTE, there is a trade off between FID and IS during training, checkpoints are with lowest FID.
+NOTE, there is a trade off between FID and other metrics during training, checkpoints are with lowest FID.
 
-For computing precision/recall on imagenet 64x64, download ref batches from [guided-diffusion](https://openaipublic.blob.core.windows.net/diffusion/jul-2021/ref_batches/imagenet/64/VIRTUAL_imagenet64_labeled.npz) and put it into results/imagenet.
-
-> cd evaluations
-
-Use conda instead of pip to install TensorFlow; otherwise, the GPU driver will not be found.
-> conda install tensorflow-gpu
->
-> pip install -r requirements.txt
+For computing precision/recall on imagenet 64x64, download ref batches from [guided-diffusion](https://openaipublic.blob.core.windows.net/diffusion/jul-2021/ref_batches/imagenet/64/VIRTUAL_imagenet64_labeled.npz) and put it into `results/imagenet`.
 
 Then
+> cd evaluations \
 > sh validate_is_pr
 
 
+## CLIP-FID Metrics
+In the study "[The Role of ImageNet Classes in Fréchet Inception Distance](https://arxiv.org/abs/2203.06026)", raised concerns about potential data leakage in FID when using discriminator pretrained on ImageNet. We provide CLIP-FID below. Our method consistently shows superior or competitive performance with significantly less training data.
+
+|Dataset|Model|CLIP-FID|FID|Training Img
+|-|-|-|-|-|
+|CIFAR10|EDM|**0.53**|1.98||
+||CD|1.26|4.10|~100M|1|
+||SiD|0.65|1.92|~400M|1|
+||GDD-I|0.66|**1.56**|**~5M**|
+|FFHQ|EDM|1.18|2.39||
+||SiD|**0.80**|1.55|~500M|1|
+||GDD-I|0.81|**0.83**|**~9M**|
+|AFHQv2|EDM|0.40|1.96||
+||SiD|0.32|1.62|~300M|1|
+||GDD-I|**0.18**|**1.24**|**~7M**|
+|ImageNet|EDM|0.82|2.64||
+||CD|2.93|6.87|~1000M|1|
+||SiD|0.75|1.52|~930M|1|
+||GDD-I|**0.51**|**1.13**|**~6M**|
 
 
+## Citation
+If you find our work useful, please consider citing our work:
 
+>@misc{zheng2024diffusionmodelsinnateonestep,
+     title={Diffusion Models Are Innate One-Step Generators}, \
+      author={Bowen Zheng and Tianming Yang},\
+      year={2024},\
+      eprint={2405.20750},\
+      archivePrefix={arXiv},\
+      primaryClass={cs.CV},\
+      url={https://arxiv.org/abs/2405.20750}, \
+}
 

@@ -18,7 +18,7 @@ torchrun --standalone --nproc_per_node=4 train.py --workers=4 \
 # CIFAR-10 cond
 torchrun --standalone --nproc_per_node=4 train.py --workers=4 \
         --freeze=0 --backbone=1 --ema=0.5  --dropout=0  --batch=256 --dlr=1e-4 --lr=1e-4 --cond=1 --arch=ncsnpp --duration=5   \
-        --outdir=training-runs-cond-cifar10-gdd --transfer=pretrained/edm-cifar10-32x32-uncond-ve.pkl \
+        --outdir=training-runs-cond-cifar10-gdd --transfer=pretrained/edm-cifar10-32x32-cond-ve.pkl \
         --data=datasets/cifar10-32x32.zip \
         --fp16=True --loss-type='ns'  --r1-gamma=1e-4 \
         --diffaug=False --r1-type='r1'   \
@@ -71,7 +71,7 @@ torchrun --standalone --nproc_per_node=4 train.py --workers=4 \
 # CIFAR-10 cond
 torchrun --standalone --nproc_per_node=4 train.py --workers=4 \
         --freeze=1 --backbone=1 --ema=0.5  --dropout=0  --batch=256 --dlr=1e-4 --lr=1e-4 --cond=1 --arch=ncsnpp --duration=5   \
-        --outdir=training-runs-cond-cifar10-gdd-i --transfer=pretrained/edm-cifar10-32x32-uncond-ve.pkl \
+        --outdir=training-runs-cond-cifar10-gdd-i --transfer=pretrained/edm-cifar10-32x32-cond-ve.pkl \
         --data=datasets/cifar10-32x32.zip \
         --fp16=True --loss-type='ns'  --r1-gamma=1e-4 \
         --diffaug=False --r1-type='r1'   \

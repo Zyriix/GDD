@@ -1,5 +1,10 @@
+NOTE:
+>**I am actively seeking a PhD or Research Assistant (RA) position in image and video generation. Additionally, I would greatly appreciate any GPU resources to support my research. You can download my [CV](https://drive.google.com/file/d/1v76e36V_af32eQywL7sKP0a4hLLy9zwL/view?usp=drive_link) and [Statement of Purpose (SOP)](https://drive.google.com/file/d/1N3oPb7LSTa1NElNFU-HvDE0YlWnye8wl/view?usp=drive_link) here. Please don’t hesitate to [contact](zyriix213@gmail.com) me if you are interested in working with me.**
+
 # GDD - Official Pytorch implementation
 ![image](./fig/main.png)
+
+
 
 ## Diffusion Models Are Innate One-Step Generators  [[arxiv]](https://arxiv.org/abs/2405.20750)
 
